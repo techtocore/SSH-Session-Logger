@@ -41,6 +41,7 @@ pgrep -a -f '^sshd: .*@' | while read pid a; do
   echo "INBOUND $a (from $from) $pid"
 done >>${tmpfile}
 
+echo -en "The following shell sessions (pid) will be monitored:" >> activeLogs.txt
 
 i=0
 while read opt; do 
@@ -48,7 +49,16 @@ while read opt; do
     if [[ "$i" == 1 ]]; then
       continue
     fi
-    echo "Logging $opt"
+    
     pid="${opt##* }"
-    log_ssh_connection "$pid"
+    
+    if grep -R "$pid" activeLogs.txt
+    then
+        continue
+    fi
+
+    echo "Logging $opt"
+
+    echo -en "$pid" >> activeLogs.txt
+    log_ssh_connection "$pid" &
 done < "$tmpfile"
