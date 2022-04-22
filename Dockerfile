@@ -10,7 +10,7 @@ RUN apt -y install openssh-server sudo
 
 # Add the script to the Docker Image
 ADD log.sh /root/log.sh
-RUN chmod 0644 /root/log.sh
+RUN chmod u+x /root/log.sh
 
 # Add the cron job
 RUN crontab -l | { cat; echo "* * * * * bash /root/log.sh"; } | crontab -
@@ -25,6 +25,8 @@ RUN mkdir /var/run/sshd
 RUN echo 'root:Docker!' | chpasswd
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+RUN sysctl net.ipv4.conf.all.forwarding=1
+RUN iptables -P FORWARD ACCEPT
 
 EXPOSE 22 5000
 
