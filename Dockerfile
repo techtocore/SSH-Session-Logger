@@ -27,13 +27,13 @@ RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config \
  && sed -i -e 's/#PermitUserEnvironment no/PermitUserEnvironment yes/' /etc/ssh/sshd_config \
  && mkdir -p /root/.ssh \
  && chmod 700 /root/.ssh \
- && /usr/bin/ssh-keygen -A \
  && mkdir -p /run/sshd \
- && echo 'root:Docker!' | chpasswd
+ && echo 'root:root' | chpasswd
 RUN sysctl net.ipv4.conf.all.forwarding=1
 
 EXPOSE 22 5000
 
-ENTRYPOINT [ "python3" ]
+ENTRYPOINT ["/entrypoint.sh"]
+ADD entrypoint.sh /entrypoint.sh
 
-CMD [ "/root/flask_app.py" ]
+RUN chmod 555 /entrypoint.sh

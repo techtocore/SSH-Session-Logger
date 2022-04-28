@@ -1,9 +1,5 @@
 from flask import Flask, request
 from jinja2 import Environment
-import os
-
-cmd = 'service cron start && /usr/sbin/sshd -d &'
-os.system(cmd)
 
 app = Flask(__name__)
 Jinja2 = Environment()
