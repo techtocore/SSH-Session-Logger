@@ -4,17 +4,9 @@ FROM ubuntu:latest
 RUN apt update
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/New_York
-RUN apt -y install cron 
 RUN apt -y install python3 python3-pip
 RUN apt -y install openssh-server sudo
-RUN apt -y install strace vim
-
-# Add the script to the Docker Image
-ADD log.sh /root/log.sh
-RUN chmod u+x /root/log.sh
-
-# Add the cron job
-RUN crontab -l | { cat; echo "* * * * * bash /root/log.sh"; } | crontab -
+RUN apt -y install acct auditd
 
 # Flask server setup
 RUN pip3 install flask
